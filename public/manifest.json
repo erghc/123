@@ -1,0 +1,32 @@
+{
+    "name": "FTP搜索系统",
+    "short_name": "FTP搜索",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#165DFF",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "logo192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "logo512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "splash_pages": null,
+    "description": "一个高效的FTP文件搜索系统，帮助用户快速查找和访问FTP服务器上的文件。",
+    "categories": ["工具", "效率", "搜索"],
+    "dir": "ltr",
+    "lang": "zh-CN",
+    "scope": "/"
+}    

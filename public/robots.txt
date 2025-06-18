@@ -1,0 +1,12 @@
+# robots.txt for FTP Search System
+
+User-agent: *
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /upload
+
+Allow: /search
+Allow: /files/
+
+Sitemap: https://yourdomain.com/sitemap.xml    
