@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${errorTitle} + ' - FTP搜索系统'">错误 - FTP搜索系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/custom.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fa fa-search text-primary"></i> FTP搜索系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登录</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user != null}">
+                        <a class="nav-link" href="#" onclick="logout()">退出</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user != null and session.user.isAdmin}">
+                        <a class="nav-link" href="/admin/dashboard">管理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="error-container">
+                    <div class="error-code" th:text="${errorCode}">404</div>
+                    <h1 class="error-title" th:text="${errorTitle}">页面未找到</h1>
+                    <p class="error-message" th:text="${errorMessage}">抱歉，您访问的页面不存在或已被删除。</p>
+                    
+                    <div class="error-details" th:if="${errorDetails}">
+                        <div class="accordion mt-4" id="errorDetailsAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="errorDetailsHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#errorDetailsCollapse" aria-expanded="false" aria-controls="errorDetailsCollapse">
+                                        错误详情
+                                    </button>
+                                </h2>
+                                <div id="errorDetailsCollapse" class="accordion-collapse collapse" aria-labelledby="errorDetailsHeading" data-bs-parent="#errorDetailsAccordion">
+                                    <div class="accordion-body">
+                                        <pre class="bg-dark text-white p-3 rounded overflow-auto" style="max-height: 300px;" th:text="${errorDetails}">错误堆栈信息将显示在这里...</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="fa fa-home"></i> 返回首页
+                        </a>
+                        <button class="btn btn-outline-secondary btn-lg ms-3" onclick="history.back()">
+                            <i class="fa fa-arrow-left"></i> 返回上一页
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="text-muted mb-0">© 2023 FTP搜索系统 | 快速检索您的FTP文件</p>
+            <div class="mt-2">
+                <a href="#" class="text-muted mx-2">关于我们</a>
+                <a href="#" class="text-muted mx-2">使用帮助</a>
+                <a href="#" class="text-muted mx-2">隐私政策</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 登出功能
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/';
+                    } else {
+                        throw new Error('登出失败');
+                    }
+                })
+                .catch(error => {
+                    console.error('登出错误:', error);
+                    showToast('登出失败，请稍后再试', 'error');
+                });
+            }
+        }
+
+        // 显示通知提示
+        function showToast(message, type = 'success') {
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+            toast.textContent = message;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 显示动画
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>    
